@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "hugosenari"
-description   = "early return structures"
+description   = "early return macros"
 license       = "MIT"
 srcDir        = "src"
 

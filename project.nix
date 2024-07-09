@@ -12,6 +12,7 @@
   files.gitignore.template."Global/VisualStudioCode" = true;
   files.gitignore.template."Nim"                     = true;
   files.gitignore.template."VisualStudio"            = true;
+  files.gitignore.pattern.".direnv"                  = true;
 
   # install a packages
   packages = [
