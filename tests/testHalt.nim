@@ -45,3 +45,29 @@ test "dbgAsserted":
   except AssertionDefect as e:
     check e.msg[1 .. 8] == "filename"
 
+
+test "early break":
+  var a = 0
+  for i in 0 .. 10:
+    until i >= 4
+    a = i
+  check a == 3
+
+test "early break named":
+  var a = 0
+  block named:
+    for i in 0 .. 5:
+      for x in 0 .. 5:
+        until i >= 4, named
+        a = i
+      check a == i
+  check a > 1
+
+test "early continue":
+  var a = 0
+  for i in 0 .. 10:
+    skip i < 4
+    check i >= 4
+    a = i
+  check a == 10
+
