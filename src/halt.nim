@@ -1,9 +1,5 @@
 import std/macros
 
-template found*(i: int): bool =
-  ## Convert index not found (anything lower than 0) to bool
-  i >= 0
-
 
 macro guard*(cond: untyped): untyped =
   ## Return early if condition isn't met
@@ -104,3 +100,38 @@ template dbgAssert*(cond: untyped; msg: untyped = "") =
     {.line: loc.}:
       if not cond:
         failedAssertImpl(ploc & " `" & astToStr(cond) & "` " & msg)
+
+
+import std/options
+
+
+template found*(i: SomeNumber): bool =
+  ## Convert index not found (anything lower than 0) to bool
+  i >= 0
+
+template found*(holder: untyped): bool =
+  ## Convert index not found (anything lower than 0) to bool
+  holder.len != 0
+
+template found*[T](holder: Option[T]): bool =
+  holder.isSome
+
+template missing*(holder: untyped): bool =
+  not holder.found
+
+template empty*(holder: untyped): bool =
+  ## check holder is empty
+  holder.len == 0
+
+template empty*(holder: SomeNumber): bool =
+  ## check holder is empty
+  holder == 0
+
+template empty*[T](holder: Option[T]): bool =
+  ## check holder is empty
+  holder.isNone
+
+template filled*(holder: untyped): bool =
+  ## check holder is not empty
+  not holder.empty
+

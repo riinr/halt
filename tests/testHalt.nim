@@ -1,6 +1,38 @@
 import unittest
-
+import std/options
 import halt
+
+
+test "item found a index":
+  check 0.found
+  check 1.found
+  check 10.found
+  check "1".found
+  check [1].found
+  check @[1].found
+  check 1.some.found
+
+test "item not found a index":
+  check -1.missing
+  check -10.missing
+  check "".missing
+  check [].missing
+  check @[].missing
+  check none(int).missing
+
+test "is empty":
+  check empty 0
+  check empty ""
+  check empty []
+  check empty @[]
+  check empty none(int)
+
+test "is not empty":
+  check filled 1
+  check filled "1"
+  check filled [1]
+  check filled @[1]
+  check filled some(1)
 
 proc guarded() =
   guard 1 < 0
@@ -29,15 +61,6 @@ proc unguardedR(): bool =
 
 test "no guard with type":
   check unguardedR()
-
-test "item found a index":
-  check 0.found
-  check 1.found
-  check 10.found
-
-test "item not found a index":
-  check not -1.found
-  check not -10.found
 
 test "dbgAsserted":
   try:
