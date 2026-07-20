@@ -19,6 +19,14 @@ import halt
 macro guard(cond: untyped): untyped
 ```
 
+**Examples:**
+
+```nim
+proc foo*(x: int) =
+  guard x < 1
+  return 2
+```
+
 ## **macro** guard
 
 <p>Return early if condition isn't met</p>
@@ -27,6 +35,15 @@ macro guard(cond: untyped): untyped
 
 ```nim
 macro guard(cond: untyped; resp): untyped
+```
+
+**Examples:**
+
+```nim
+proc division*(divisor, dividend: int): float =
+  ## we assume division by 0 as 0
+  guard divisor == 0, 0
+  dividend / divisor
 ```
 
 ## **macro** guard
@@ -39,6 +56,15 @@ macro guard(cond: untyped; resp): untyped
 macro guard(cond: untyped; T: typedesc): untyped
 ```
 
+**Examples:**
+
+```nim
+import std/options
+proc foo*(x: int): Option[int] =
+  guard x < 1, int
+  some(10)
+```
+
 ## **macro** until
 
 <p>Break the iteration if condition isn't met</p>
@@ -47,6 +73,14 @@ macro guard(cond: untyped; T: typedesc): untyped
 
 ```nim
 macro until(cond: untyped): untyped
+```
+
+**Examples:**
+
+```nim
+proc foo*(x: int) =
+  for i in 0 .. 10:
+    until i > x
 ```
 
 ## **macro** until
@@ -59,6 +93,16 @@ macro until(cond: untyped): untyped
 macro until(cond: untyped; name: untyped): untyped
 ```
 
+**Examples:**
+
+```nim
+proc foo*() =
+  block bar:
+    for x in 0 .. 10:
+      for y in 0 .. 10:
+        until x + y > 5, bar
+```
+
 ## **macro** skip
 
 <p>Continue to next iteration if condition isn't met</p>
@@ -68,12 +112,34 @@ macro until(cond: untyped; name: untyped): untyped
 macro skip(cond: untyped): untyped
 ```
 
+**Examples:**
+
+```nim
+proc odd*(x: int) =
+  for i in 0 .. x:
+    skip i mod 2 != 0
+    echo i, " is odd"
+
+proc even*(x: int) =
+  for i in 0 .. x:
+    skip i mod 2 == 0
+    echo i, " is even"
+```
+
 ## **template** dbgAssert
 
 <tt class="docutils literal"><span class="pre"><span class="Identifier">assert</span></span></tt> is preserved for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">release</span></span></tt>, and not for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt>, but <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt> is too dangereous, this version will keep assert only for debug builds
 
 ```nim
 template dbgAssert(cond: untyped; msg: untyped = "")
+```
+
+**Examples:**
+
+```nim
+proc foo*(x: int): int =
+  dbgAssert x < 1
+  return 10
 ```
 
 ## **macro** guard
@@ -86,6 +152,15 @@ template dbgAssert(cond: untyped; msg: untyped = "")
 macro guard[T](cond: Option[T]): untyped
 ```
 
+**Examples:**
+
+```nim
+import std/options
+proc foo*(o: Option[int]) =
+  guard o
+  assert o.get + 1 > 0
+```
+
 ## **macro** guard
 
 <p>Return early if condition isn't met</p>
@@ -96,6 +171,15 @@ macro guard[T](cond: Option[T]): untyped
 macro guard[T](cond: Option[T]; resp): untyped
 ```
 
+**Examples:**
+
+```nim
+import std/options
+proc foo*(o: Option[int]): int =
+  guard o, -1
+  o.get + 1
+```
+
 ## **macro** guard
 
 <p>Return early if condition isn't met</p>
@@ -104,6 +188,15 @@ macro guard[T](cond: Option[T]; resp): untyped
 
 ```nim
 macro guard[T](cond: Option[T]; R: typedesc): untyped
+```
+
+**Examples:**
+
+```nim
+import std/options
+proc foo*(o: Option[int]): Option[bool] =
+  guard o, bool
+  some true
 ```
 
 ## **converter** toOpt
@@ -190,12 +283,31 @@ Similar to <a class="reference external" href="https://nim-lang.org/docs/sequtil
 template filterIt[T](o: Option[T]; op: untyped): Option[T]
 ```
 
+**Examples:**
+
+```nim
+import std/options
+var o = some(1)
+assert o.filterIt(it >= 0) == some(1)
+assert o.filterIt(it == 0) == none(int)
+```
+
 ## **template** applyIt
 
 Similar to <a class="reference external" href="https://nim-lang.org/docs/sequtils.html#applyIt.t%2Cuntyped%2Cuntyped">sequtils.applyIt</a>
 
 ```nim
 template applyIt[T](o: var Option[T]; op: untyped): bool
+```
+
+**Examples:**
+
+```nim
+import std/options
+var o = some(1)
+if o.applyIt(it + 1):
+  echo "is some"
+assert o == some(2)
 ```
 
 ## **template** mapIt
@@ -206,10 +318,29 @@ Similar to <a class="reference external" href="https://nim-lang.org/docs/sequtil
 template mapIt[T](o: Option[T]; op: untyped): untyped
 ```
 
+**Examples:**
+
+```nim
+import std/options
+let o = some(1)
+assert o.mapIt(it + 1) == some(2)
+assert o.mapIt(it - 1) == some(0)
+```
+
 ## **template** mapTo
 
 Similar to <a class="reference external" href="https://nim-lang.org/docs/sequtils.html#mapIt.t%2Ctyped%2Cuntyped">sequtils.mapIt</a>
 
 ```nim
 template mapTo[T](o: Option[T]; R: typedesc; op: untyped): untyped
+```
+
+**Examples:**
+
+```nim
+import std/options
+let o = some(1)
+assert o.mapTo(bool, it == 1) == some(true)
+assert o.mapTo(bool, it != 1) == some(false)
+assert o.mapTo(string, $it)   == some("1")
 ```

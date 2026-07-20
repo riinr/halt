@@ -11,6 +11,7 @@ macro guard*(cond: untyped): untyped =
   runnableExamples:
     proc foo*(x: int) =
       guard x < 1
+      return 2
 
   quote("@") do:
     if not(@cond): return
