@@ -15,9 +15,6 @@ import halt
 <p>Similar to assert but returns instead of raise Error</p>
 <p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
 
-```nim
-macro guard(cond: untyped): untyped
-```
 
 **Examples:**
 
@@ -27,18 +24,6 @@ proc foo*(x: int) =
   echo "Destroy the world!"
 ```
 
-## **macro** guard
-
-<p>Return early if not condition</p>
-<p>Similar to assert but returns instead of raise Error</p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro guard(cond: untyped; resp): untyped
-```
-
-**Examples:**
-
 ```nim
 proc division*(divisor, dividend: int): float =
   ## we assume division by 0 as 0f
@@ -46,17 +31,6 @@ proc division*(divisor, dividend: int): float =
   dividend / divisor
 ```
 
-## **macro** guard
-
-<p>Return early if not condition </p>
-<p>Similar to assert but returns instead of raise Error</p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro guard(cond: untyped; T: typedesc): untyped
-```
-
-**Examples:**
 
 ```nim
 import std/options
@@ -65,18 +39,6 @@ proc foo*(x: int): Option[int] =
   some(10)
 ```
 
-## **macro** guard
-
-<p>Return early if condition isn't met</p>
-<p>Similar to assert but returns instead of raise Error</p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro guard[T](cond: Option[T]): untyped
-```
-
-**Examples:**
-
 ```nim
 import std/options
 proc foo*(o: Option[int]) =
@@ -84,36 +46,12 @@ proc foo*(o: Option[int]) =
   assert o.get + 1 > 0
 ```
 
-## **macro** guard
-
-<p>Return early if condition isn't met</p>
-<p>Similar to assert but returns instead of raise Error</p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro guard[T](cond: Option[T]; resp): untyped
-```
-
-**Examples:**
-
 ```nim
 import std/options
 proc foo*(o: Option[int]): int =
   guard o, -1
   o.get + 1
 ```
-
-## **macro** guard
-
-<p>Return early if condition isn't met</p>
-<p>Similar to assert but returns instead of raise Error</p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro guard[T](cond: Option[T]; R: typedesc): untyped
-```
-
-**Examples:**
 
 ```nim
 import std/options
@@ -128,10 +66,6 @@ proc foo*(o: Option[int]): Option[bool] =
 <p>Like guard but with <tt class="docutils literal"><span class="pre"><span class="Keyword">break</span></span></tt></p>
 <p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
 
-```nim
-macro until(cond: untyped): untyped
-```
-
 **Examples:**
 
 ```nim
@@ -139,18 +73,6 @@ proc foo*(x: int) =
   for i in 0 .. 10:
     until i > x
 ```
-
-## **macro** until
-
-<p>Break the iteration when condition met</p>
-<p>Like guard but with <tt class="docutils literal"><span class="pre"><span class="Keyword">break</span></span></tt></p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro until(cond: untyped; name: untyped): untyped
-```
-
-**Examples:**
 
 ```nim
 proc foo*() =
@@ -164,10 +86,6 @@ proc foo*() =
 
 <p>Continue to next iteration when condition met</p>
 <p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro skip(cond: untyped): untyped
-```
 
 **Examples:**
 
@@ -187,10 +105,6 @@ proc even*(x: int) =
 
 <tt class="docutils literal"><span class="pre"><span class="Identifier">assert</span></span></tt> is preserved for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">release</span></span></tt>, and not for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt>, but <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt> is too dangereous, this version will keep assert only for debug builds
 
-```nim
-template dbgAssert(cond: untyped; msg: untyped = "")
-```
-
 **Examples:**
 
 ```nim
@@ -206,9 +120,6 @@ proc foo*(x: int): int =
 ```nim
 converter toOpt[T](v: T): Option[T]
 ```
-
-## **converter** toOpt
-
 
 ```nim
 converter toOpt(T: typedesc): Option[T]
