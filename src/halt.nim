@@ -2,7 +2,7 @@ import std/macros
 
 
 macro guard*(cond: untyped): untyped =
-  ## Return early if condition isn't met
+  ## Return early if not condition
   ##
   ## Similar to assert but returns instead of raise Error
   ##
@@ -18,7 +18,7 @@ macro guard*(cond: untyped): untyped =
 
 
 macro guard*(cond: untyped; resp): untyped =
-  ## Return early if condition isn't met
+  ## Return early if not condition
   ##
   ## Similar to assert but returns instead of raise Error
   ##
@@ -27,7 +27,7 @@ macro guard*(cond: untyped; resp): untyped =
   runnableExamples:
     proc division*(divisor, dividend: int): float =
       ## we assume division by 0 as 0
-      guard divisor == 0, 0f
+      guard divisor != 0, 0f
       dividend / divisor
 
   quote("@") do:
@@ -36,7 +36,7 @@ macro guard*(cond: untyped; resp): untyped =
 
 
 macro guard*(cond: untyped; T: typedesc): untyped =
-  ## Return early if condition isn't met
+  ## Return early if not condition
   ##
   ## Similar to assert but returns instead of raise Error
   ##
@@ -51,81 +51,6 @@ macro guard*(cond: untyped; T: typedesc): untyped =
   quote("@") do:
     if not(@cond):
       return none(@T)
-
-
-macro until*(cond: untyped): untyped =
-  ## Break the iteration if condition isn't met
-  ##
-  ## Like guard but with `break`
-  ##
-  ## http://wiki.c2.com/?GuardClause=
-  
-  runnableExamples:
-    proc foo*(x: int) =
-      for i in 0 .. 10:
-        until i > x
-
-  quote("@") do:
-    if @cond: break
-
-
-macro until*(cond: untyped; name: untyped): untyped =
-  ## Break the iteration if condition isn't met
-  ##
-  ## Like guard but with `break`
-  ##
-  ## http://wiki.c2.com/?GuardClause=
-
-  runnableExamples:
-    proc foo*() =
-      block bar:
-        for x in 0 .. 10:
-          for y in 0 .. 10:
-            until x + y > 5, bar
-
-  quote("@") do:
-    if @cond: break @name
-
-
-macro skip*(cond: untyped): untyped =
-  ## Continue to next iteration if condition isn't met
-  ##
-  ## http://wiki.c2.com/?GuardClause=
-  
-  runnableExamples:
-    proc odd*(x: int) =
-      for i in 0 .. x:
-        skip i mod 2 != 0
-        echo i, " is odd"
-
-    proc even*(x: int) =
-      for i in 0 .. x:
-        skip i mod 2 == 0
-        echo i, " is even"
-
-  quote("@") do:
-    if @cond: continue
-
-
-template dbgAssert*(cond: untyped; msg: untyped = "") =
-  ## `assert` is preserved for `-d:release`, and not for `-d:danger`,
-  ## but `-d:danger` is too dangereous,
-  ## this version will keep assert only for debug builds
-  
-  runnableExamples:
-    proc foo*(x: int): int =
-      dbgAssert x < 1
-      return 10
-
-  when compileOption("assertions") and not defined release:
-    const
-      loc = instantiationInfo(fullPaths = compileOption("excessiveStackTrace"))
-      ploc = $loc
-    bind instantiationInfo
-    mixin failedAssertImpl
-    {.line: loc.}:
-      if not cond:
-        failedAssertImpl(ploc & " `" & astToStr(cond) & "` " & msg)
 
 
 import std/options
@@ -179,6 +104,77 @@ macro guard*[T](cond: Option[T]; R: typedesc): untyped =
   quote("@") do:
     if @cond.isNone:
       return none(@R)
+
+macro until*(cond: untyped): untyped =
+  ## Break the iteration when condition met
+  ##
+  ## Like guard but with `break`
+  ##
+  ## http://wiki.c2.com/?GuardClause=
+  
+  runnableExamples:
+    proc foo*(x: int) =
+      for i in 0 .. 10:
+        until i > x
+
+  quote("@") do:
+    if @cond: break
+
+macro until*(cond: untyped; name: untyped): untyped =
+  ## Break the iteration when condition met
+  ##
+  ## Like guard but with `break`
+  ##
+  ## http://wiki.c2.com/?GuardClause=
+
+  runnableExamples:
+    proc foo*() =
+      block bar:
+        for x in 0 .. 10:
+          for y in 0 .. 10:
+            until x + y > 5, bar
+
+  quote("@") do:
+    if @cond: break @name
+
+macro skip*(cond: untyped): untyped =
+  ## Continue to next iteration when condition met
+  ##
+  ## http://wiki.c2.com/?GuardClause=
+  
+  runnableExamples:
+    proc odd*(x: int) =
+      for i in 0 .. x:
+        skip i mod 2 != 0
+        echo i, " is odd"
+
+    proc even*(x: int) =
+      for i in 0 .. x:
+        skip i mod 2 == 0
+        echo i, " is even"
+
+  quote("@") do:
+    if @cond: continue
+
+template dbgAssert*(cond: untyped; msg: untyped = "") =
+  ## `assert` is preserved for `-d:release`, and not for `-d:danger`,
+  ## but `-d:danger` is too dangereous,
+  ## this version will keep assert only for dev builds
+  
+  runnableExamples:
+    proc foo*(x: int): int =
+      dbgAssert x < 1
+      return 10
+
+  when compileOption("assertions") and not defined release:
+    const
+      loc = instantiationInfo(fullPaths = compileOption("excessiveStackTrace"))
+      ploc = $loc
+    bind instantiationInfo
+    mixin failedAssertImpl
+    {.line: loc.}:
+      if not cond:
+        failedAssertImpl(ploc & " `" & astToStr(cond) & "` " & msg)
 
 converter toOpt*[T](v: T): Option[T] =
   some(v)

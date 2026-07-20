@@ -11,7 +11,7 @@ import halt
 
 ## **macro** guard
 
-<p>Return early if condition isn't met</p>
+<p>Return early if not condition</p>
 <p>Similar to assert but returns instead of raise Error</p>
 <p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
 
@@ -23,13 +23,13 @@ macro guard(cond: untyped): untyped
 
 ```nim
 proc foo*(x: int) =
-  guard x < 1
+  guard x < 0
   echo "Destroy the world!"
 ```
 
 ## **macro** guard
 
-<p>Return early if condition isn't met</p>
+<p>Return early if not condition</p>
 <p>Similar to assert but returns instead of raise Error</p>
 <p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
 
@@ -41,14 +41,14 @@ macro guard(cond: untyped; resp): untyped
 
 ```nim
 proc division*(divisor, dividend: int): float =
-  ## we assume division by 0 as 0
-  guard divisor == 0, 0f
+  ## we assume division by 0 as 0f
+  guard divisor != 0, 0f
   dividend / divisor
 ```
 
 ## **macro** guard
 
-<p>Return early if condition isn't met</p>
+<p>Return early if not condition </p>
 <p>Similar to assert but returns instead of raise Error</p>
 <p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
 
@@ -63,83 +63,6 @@ import std/options
 proc foo*(x: int): Option[int] =
   guard x < 1, int
   some(10)
-```
-
-## **macro** until
-
-<p>Break the iteration if condition isn't met</p>
-<p>Like guard but with <tt class="docutils literal"><span class="pre"><span class="Keyword">break</span></span></tt></p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro until(cond: untyped): untyped
-```
-
-**Examples:**
-
-```nim
-proc foo*(x: int) =
-  for i in 0 .. 10:
-    until i > x
-```
-
-## **macro** until
-
-<p>Break the iteration if condition isn't met</p>
-<p>Like guard but with <tt class="docutils literal"><span class="pre"><span class="Keyword">break</span></span></tt></p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro until(cond: untyped; name: untyped): untyped
-```
-
-**Examples:**
-
-```nim
-proc foo*() =
-  block bar:
-    for x in 0 .. 10:
-      for y in 0 .. 10:
-        until x + y > 5, bar
-```
-
-## **macro** skip
-
-<p>Continue to next iteration if condition isn't met</p>
-<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
-
-```nim
-macro skip(cond: untyped): untyped
-```
-
-**Examples:**
-
-```nim
-proc odd*(x: int) =
-  for i in 0 .. x:
-    skip i mod 2 != 0
-    echo i, " is odd"
-
-proc even*(x: int) =
-  for i in 0 .. x:
-    skip i mod 2 == 0
-    echo i, " is even"
-```
-
-## **template** dbgAssert
-
-<tt class="docutils literal"><span class="pre"><span class="Identifier">assert</span></span></tt> is preserved for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">release</span></span></tt>, and not for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt>, but <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt> is too dangereous, this version will keep assert only for debug builds
-
-```nim
-template dbgAssert(cond: untyped; msg: untyped = "")
-```
-
-**Examples:**
-
-```nim
-proc foo*(x: int): int =
-  dbgAssert x < 1
-  return 10
 ```
 
 ## **macro** guard
@@ -198,6 +121,84 @@ proc foo*(o: Option[int]): Option[bool] =
   guard o, bool
   some true
 ```
+
+## **macro** until
+
+<p>Break the iteration when condition met</p>
+<p>Like guard but with <tt class="docutils literal"><span class="pre"><span class="Keyword">break</span></span></tt></p>
+<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
+
+```nim
+macro until(cond: untyped): untyped
+```
+
+**Examples:**
+
+```nim
+proc foo*(x: int) =
+  for i in 0 .. 10:
+    until i > x
+```
+
+## **macro** until
+
+<p>Break the iteration when condition met</p>
+<p>Like guard but with <tt class="docutils literal"><span class="pre"><span class="Keyword">break</span></span></tt></p>
+<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
+
+```nim
+macro until(cond: untyped; name: untyped): untyped
+```
+
+**Examples:**
+
+```nim
+proc foo*() =
+  block bar:
+    for x in 0 .. 10:
+      for y in 0 .. 10:
+        until x + y > 5, bar
+```
+
+## **macro** skip
+
+<p>Continue to next iteration when condition met</p>
+<p><a class="reference external" href="http://wiki.c2.com/?GuardClause">http://wiki.c2.com/?GuardClause</a>=</p>
+
+```nim
+macro skip(cond: untyped): untyped
+```
+
+**Examples:**
+
+```nim
+proc odd*(x: int) =
+  for i in 0 .. x:
+    skip i mod 2 != 0
+    echo i, " is odd"
+
+proc even*(x: int) =
+  for i in 0 .. x:
+    skip i mod 2 == 0
+    echo i, " is even"
+```
+
+## **template** dbgAssert
+
+<tt class="docutils literal"><span class="pre"><span class="Identifier">assert</span></span></tt> is preserved for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">release</span></span></tt>, and not for <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt>, but <tt class="docutils literal"><span class="pre"><span class="Operator">-</span><span class="Identifier">d</span><span class="Punctuation">:</span><span class="Identifier">danger</span></span></tt> is too dangereous, this version will keep assert only for debug builds
+
+```nim
+template dbgAssert(cond: untyped; msg: untyped = "")
+```
+
+**Examples:**
+
+```nim
+proc foo*(x: int): int =
+  dbgAssert x < 1
+  return 10
+```
+
 
 ## **converter** toOpt
 
