@@ -24,7 +24,7 @@ macro guard(cond: untyped): untyped
 ```nim
 proc foo*(x: int) =
   guard x < 1
-  return 2
+  echo "Destroy the world!"
 ```
 
 ## **macro** guard
@@ -42,7 +42,7 @@ macro guard(cond: untyped; resp): untyped
 ```nim
 proc division*(divisor, dividend: int): float =
   ## we assume division by 0 as 0
-  guard divisor == 0, 0
+  guard divisor == 0, 0f
   dividend / divisor
 ```
 

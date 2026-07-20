@@ -11,7 +11,7 @@ macro guard*(cond: untyped): untyped =
   runnableExamples:
     proc foo*(x: int) =
       guard x < 1
-      return 2
+      echo "Destroy the world!"
 
   quote("@") do:
     if not(@cond): return
@@ -27,7 +27,7 @@ macro guard*(cond: untyped; resp): untyped =
   runnableExamples:
     proc division*(divisor, dividend: int): float =
       ## we assume division by 0 as 0
-      guard divisor == 0, 0
+      guard divisor == 0, 0f
       dividend / divisor
 
   quote("@") do:
