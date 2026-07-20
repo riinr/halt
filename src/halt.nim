@@ -9,9 +9,9 @@ macro guard*(cond: untyped): untyped =
   ## http://wiki.c2.com/?GuardClause=
   
   runnableExamples:
-    proc foo*(x: int) =
-      guard x < 1
-      echo "Destroy the world!"
+    proc validate*(isValid: bool) =
+      guard isValid
+      echo "Yes is valid!"
 
   quote("@") do:
     if not(@cond): return
@@ -186,10 +186,6 @@ template found*(i: SomeNumber): bool =
   ## Convert index not found (anything lower than 0) to bool
   i >= 0
 
-template found*(holder: untyped): bool =
-  ## Convert index not found (anything lower than 0) to bool
-  holder.len != 0
-
 template found*[T](holder: Option[T]): bool =
   holder.isSome
 
@@ -228,7 +224,6 @@ template filterIt*[T](o: Option[T]; op: untyped): Option[T] =
       o
     else:
       none(T)
-
 
 template applyIt*[T](o: var Option[T]; op: untyped): bool =
   ## Similar to `sequtils.applyIt <https://nim-lang.org/docs/sequtils.html#applyIt.t%2Cuntyped%2Cuntyped>`_
@@ -273,7 +268,6 @@ template mapTo*[T](o: Option[T]; R: typedesc; op: untyped): untyped =
     some(op)
   else:
     none(R)
-
 
 when isMainModule:
   # some

@@ -19,18 +19,16 @@ import halt
 **Examples:**
 
 ```nim
-proc foo*(x: int) =
-  guard x < 0
-  echo "Destroy the world!"
+proc validate*(isValid: bool) =
+  guard isValid
+  echo "Yes isValid!"
 ```
 
 ```nim
-proc division*(divisor, dividend: int): float =
-  ## we assume division by 0 as 0f
-  guard divisor != 0, 0f
-  dividend / divisor
+proc fib*(n: int): int =
+  guard n > 1, n
+  fib(n - 1) + fib(n + 2)
 ```
-
 
 ```nim
 import std/options
@@ -133,12 +131,12 @@ Convert index not found (anything lower than 0) to bool
 template found(i: SomeNumber): bool
 ```
 
-## **template** found
-
-Convert index not found (anything lower than 0) to bool
+**Examples:**
 
 ```nim
-template found(holder: untyped): bool
+proc foo*(haystack: string) =
+  if haystack.find("needle").found:
+    echo "We found it"
 ```
 
 ## **template** found
@@ -148,11 +146,30 @@ template found(holder: untyped): bool
 template found[T](holder: Option[T]): bool
 ```
 
+**Examples:**
+
+```nim
+proc foo*(s: Session) =
+  let optElement = s.findElement("#q")
+  if optElement.found:
+     echo "element #q exist"
+```
+
 ## **template** missing
 
 
 ```nim
 template missing(holder: untyped): bool
+```
+
+**Examples:**
+
+```nim
+
+proc foo*(s: Session) =
+  let optElement = s.findElement("#q")
+  if optElement.missing:
+     echo "element #q not found"
 ```
 
 ## **template** empty
@@ -163,6 +180,14 @@ check holder is empty
 template empty(holder: untyped): bool
 ```
 
+**Examples:**
+
+```nim
+proc foo*(s: seq[int]) =
+  if s.empty:
+    echo "seq is empty"
+```
+
 ## **template** empty
 
 check holder is empty
@@ -171,6 +196,13 @@ check holder is empty
 template empty(holder: SomeNumber): bool
 ```
 
+**Examples:**
+
+```nim
+proc foo*(s: seq[int]) =
+  if s.len.empty:
+    echo "seq is empty"
+```
 ## **template** empty
 
 check holder is empty
@@ -179,12 +211,12 @@ check holder is empty
 template empty[T](holder: Option[T]): bool
 ```
 
-## **template** filled
-
-check holder is not empty
+**Examples:**
 
 ```nim
-template filled(holder: untyped): bool
+proc foo*(o: Option[int]) =
+  if o.empty:
+    echo "Option is empty"
 ```
 
 ## **template** filterIt
